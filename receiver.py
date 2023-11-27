@@ -5,7 +5,7 @@ class ReceiverProcess:
     @staticmethod
     def deliver_data(data):
         """ deliver data from the transport layer RDT receiver to the application layer
-        :param data: a character received by the RDT RDT receiver
+        :param data: a character received by the RDT receiver
         :return: no return value
         """
         ReceiverProcess.__buffer.append(data)
@@ -63,13 +63,28 @@ class RDTReceiver:
         :param rcv_pkt: a packet delivered by the network layer 'udt_send()' to the receiver
         :return: the reply packet
         """
-
+        data = rcv_pkt['data']
+        checksum = rcv_pkt['checksum']
+        seq_num = rcv_pkt['sequence_number']
         # TODO provide your own implementation
+        if RDTReceiver.is_corrupted(rcv_pkt) or \
+                not RDTReceiver.is_expected_seq(rcv_pkt , self.sequence):
+            if RDTReceiver.is_corrupted(rcv_pkt):
+                print(f'the packet got corrupted! received data: {data} and checksum: {checksum}')
+            else:
+                print(f'wrong sequence number expected: {self.sequence} but found: {seq_num}')
 
+            if seq_num == '0':
+                seq_num = '1'
+            else:
+                seq_num = '0'
+            return RDTReceiver.make_reply_pkt(seq_num , '\0')
         # deliver the data to the process in the application layer
         ReceiverProcess.deliver_data(rcv_pkt['data'])
-
-        #reply_pkt = RDTReceiver.make_reply_pkt()
-        #return reply_pkt
-
-        return None
+        print(f'successfully received: {data}')
+        reply_pkt = RDTReceiver.make_reply_pkt(self.sequence , rcv_pkt['checksum'])
+        if self.sequence == '0':
+            self.sequence = '1'
+        else:
+            self.sequence = '0'
+        return reply_pkt

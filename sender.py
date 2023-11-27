@@ -60,7 +60,7 @@ class RDTSender:
         :return: True -> if the reply is corrupted | False ->  if the reply is NOT corrupted
         """
         # TODO provide your own implementation
-        return get_checksum(reply['data']) != reply['checksum']
+        return reply['checksum'] == '\0'
 
     @staticmethod
     def is_expected_seq(reply, exp_seq):
@@ -70,7 +70,7 @@ class RDTSender:
         :return: True -> if ack in the reply match the   expected sequence number otherwise False
         """
         # TODO provide your own implementation
-        return reply['sequence_number'] == exp_seq
+        return reply['ack'] == exp_seq
 
     @staticmethod
     def make_pkt(seq, data, checksum):
@@ -98,16 +98,20 @@ class RDTSender:
 
             checksum = RDTSender.get_checksum(data)
             pkt = RDTSender.make_pkt(self.sequence, data, checksum)
-            reply = self.net_srv.udt_send(pkt)
-            while is_corrupted(reply) or is_expected_seq(reply, self.sequence):
-                print(f'reply got corrupted! or wrong seq number')
-                reply = self.net_srv.udt_send(pkt)
-            self.sequence ^= 1
+            pkt2 = RDTSender.clone_packet(pkt)
+            print(f'the sender is trying to send: {data}, with checksum: {checksum}')
+            reply = self.net_srv.udt_send(pkt2)
 
-        pkt = RDTSender.make_pkt(-1,'\0',0)
-        while true:
-            reply = self.net_srv.udt_send(pkt)
-            
+            while RDTSender.is_corrupted(reply) \
+                    or not RDTSender.is_expected_seq(reply, self.sequence):
+                pkt2 = RDTSender.clone_packet(pkt)
+                print(f'the sender is trying to send: {data}, with checksum: {checksum} again!')
+                reply = self.net_srv.udt_send(pkt2)
+
+            if self.sequence == '0':
+                self.sequence = '1'
+            else:
+                self.sequence = '0'
 
         print(f'Sender Done!')
         return
