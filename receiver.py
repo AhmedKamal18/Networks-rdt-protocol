@@ -68,21 +68,21 @@ class RDTReceiver:
         seq_num = rcv_pkt['sequence_number']
         # TODO provide your own implementation
         if RDTReceiver.is_corrupted(rcv_pkt) or \
-                not RDTReceiver.is_expected_seq(rcv_pkt , self.sequence):
+                not RDTReceiver.is_expected_seq(rcv_pkt, self.sequence):
             if RDTReceiver.is_corrupted(rcv_pkt):
                 print(f'the packet got corrupted! received data: {data} and checksum: {checksum}')
             else:
                 print(f'wrong sequence number expected: {self.sequence} but found: {seq_num}')
-
-            if seq_num == '0':
-                seq_num = '1'
+            tmp_seq_num = '0'
+            if self.sequence == '0':
+                tmp_seq_num = '1'
             else:
-                seq_num = '0'
-            return RDTReceiver.make_reply_pkt(seq_num , '\0')
+                tmp_seq_num = '0'
+            return RDTReceiver.make_reply_pkt(tmp_seq_num, '\0')
         # deliver the data to the process in the application layer
         ReceiverProcess.deliver_data(rcv_pkt['data'])
-        print(f'successfully received: {data}')
-        reply_pkt = RDTReceiver.make_reply_pkt(self.sequence , rcv_pkt['checksum'])
+        print(f'the receiver successfully received: {data}')
+        reply_pkt = RDTReceiver.make_reply_pkt(self.sequence, rcv_pkt['checksum'])
         if self.sequence == '0':
             self.sequence = '1'
         else:
