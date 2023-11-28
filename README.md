@@ -1,19 +1,19 @@
-# RTD v2.2 Readme
+# RDT v2.2 Readme
 
 ## Overview
-RTD v2.2 is a transport layer protocol that implements a stop-and-wait pattern, supports packet corruption handling using checksum, and operates as an alternating-bit protocol. The protocol provides reliable data transfer between two communicating entities over an unreliable channel.
+RDT v2.2 is a transport layer protocol that implements a stop-and-wait pattern, supports packet corruption handling using checksum, and operates as an alternating-bit protocol. The protocol provides reliable data transfer between two communicating entities over an unreliable channel.
 
 ## Features
-1. **Stop-and-Wait Pattern**: RTD v2.2 utilizes a stop-and-wait pattern, where the sender transmits a single packet and waits for an acknowledgment from the receiver before sending the next packet. This ensures reliable delivery and simplifies flow control.
+1. **Stop-and-Wait Pattern**: RDT v2.2 utilizes a stop-and-wait pattern, where the sender transmits a single packet and waits for an acknowledgment from the receiver before sending the next packet. This ensures reliable delivery and simplifies flow control.
 
 2. **Packet Corruption Handling**: The protocol incorporates checksum-based packet corruption handling. The sender calculates the checksum by obtaining the ASCII code of each character in the packet and includes it in the packet. The receiver verifies the integrity of the received packet by recalculating the checksum and comparing it with the checksum received. If a corruption is detected, appropriate actions are taken.
 
-3. **Alternating-Bit Protocol**: RTD v2.2 operates as an alternating-bit protocol. The sender assigns a unique sequence number (alternating bit) to each packet it sends. The receiver acknowledges the correct receipt of packets by sending acknowledgments (ACKs) with the expected sequence number. If the receiver receives a corrupted packet, it sends an ACK with the next expected sequence number, effectively requesting retransmission.
+3. **Alternating-Bit Protocol**: RDT v2.2 operates as an alternating-bit protocol. The sender assigns a unique sequence number (alternating bit) to each packet it sends. The receiver acknowledges the correct receipt of packets by sending acknowledgments (ACKs) with the expected sequence number. If the receiver receives a corrupted packet, it sends an ACK with the next expected sequence number, effectively requesting retransmission.
 
 ## Usage
 
 ### Sender
-To use the RTD v2.2 protocol as a sender, follow these steps:
+To use the RDT v2.2 protocol as a sender, follow these steps:
 
 1. Establish a connection with the receiver using the underlying network layer.
 2. Prepare the data to be sent and divide it into packets.
@@ -28,7 +28,7 @@ To use the RTD v2.2 protocol as a sender, follow these steps:
 11. Close the connection with the receiver.
 
 ### Receiver
-To use the RTD v2.2 protocol as a receiver, follow these steps:
+To use the RDT v2.2 protocol as a receiver, follow these steps:
 
 1. Establish a connection with the sender using the underlying network layer.
 2. Wait for a packet from the sender.
@@ -40,18 +40,18 @@ To use the RTD v2.2 protocol as a receiver, follow these steps:
 8. Close the connection with the sender.
 
 ## Dependencies
-The RTD v2.2 protocol implementation may have dependencies on the following:
+The RDT v2.2 protocol implementation may have dependencies on the following:
 
 - Underlying network layer for establishing and managing connections.
 - Data structures for storing packet information, sequence numbers, and acknowledgments.
 
 ## Examples
-Examples of RTD v2.2 protocol implementations can be found in the following directories:
+Examples of RDT v2.2 protocol implementations can be found in the following directories:
 
-- `examples/sender`: Contains an example implementation of the sender side.
-- `examples/receiver`: Contains an example implementation of the receiver side.
+- `sender.py`: Contains an example implementation of the sender side.
+- `receiver.py`: Contains an example implementation of the receiver side.
 
 Please refer to the code and accompanying documentation in these directories for further details on how to use the protocol.
 
 ## Acknowledgments
-The RTD v2.2 protocol implementation was inspired by various reliable transport protocols and research papers. We would like to acknowledge the contributions of the researchers and developers in the field of networking and protocols.
+The RDT v2.2 protocol implementation was inspired by various reliable transport protocols and research papers. We would like to acknowledge the contributions of the researchers and developers in the field of networking and protocols.
