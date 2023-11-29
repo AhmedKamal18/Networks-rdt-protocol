@@ -10,7 +10,7 @@ NOTE: YOU SHOULD NOT MODIFY THIS CLASS
 class NetworkLayer:
     """ The network layer that deliver packets and acknowledgments between sender and receiver """
 
-    def __init__(self, reliability=1.0, delay=1.0, pkt_corrupt=True, ack_corrupt=True):
+    def __init__(self, reliability=1.0, delay=1.0, pkt_corrupt=True, ack_corrupt=True, pkt_loss=False):
         """ initialize the network layer
         :param reliability: the probability that the network layer will deliver the message correctly
         :param delay: the round trip time for sending a packet and receive a reply
@@ -23,6 +23,7 @@ class NetworkLayer:
         self.delay = delay
         self.pkt_corrupt = pkt_corrupt
         self.ack_corrupt = ack_corrupt
+        self.pkt_loss = pkt_loss
         self.recv = RDTReceiver()  # connect the network layer to the receiver
 
     def get_network_reliability(self):
@@ -33,6 +34,15 @@ class NetworkLayer:
 
     def __packet_corruption_probability(self):
         """ calculate the probability that a pocket will be corrupted
+        :return: True if the probability greater than the network reliability
+        """
+        ran = random.uniform(0, 1)
+        if ran > self.reliability:
+            return True
+        return False
+    
+    def __packet_loss_probability(self):
+        """ calculate the probability that a pocket will be lost
         :return: True if the probability greater than the network reliability
         """
         ran = random.uniform(0, 1)
@@ -73,9 +83,13 @@ class NetworkLayer:
         # TODO: You may add ONLY print statements to this function for debugging purpose
         self.packet = frame
         s_test = self.__packet_corruption_probability()
+        loss_test = self.__packet_loss_probability()
 
         if s_test and self.pkt_corrupt:
             self.__corrupt_packet()
+
+        if loss_test and self.pkt_loss:
+            return None
 
         time.sleep(self.delay)
 
@@ -87,3 +101,5 @@ class NetworkLayer:
             self.__corrupt_reply()
 
         return self.reply
+    
+    

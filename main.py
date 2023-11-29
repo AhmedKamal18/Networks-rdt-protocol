@@ -12,6 +12,7 @@ if __name__ == '__main__':
     debug = bool(int(args['debug']))
     corrupt_pkt = True
     corrupt_ack = True
+    pkt_loss = True
     if debug:
         corrupt_pkt = bool(int(args['pkt']))
         corrupt_ack = bool(int(args['ack']))
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     print(f'Sender is sending:{SenderProcess.get_outgoing_data()}')
 
     network_serv = NetworkLayer(reliability=prob_to_deliver, delay=delay, pkt_corrupt=corrupt_pkt,
-                                ack_corrupt=corrupt_ack)
+                                ack_corrupt=corrupt_ack, pkt_loss=pkt_loss)
 
     rdt_sender = RDTSender(network_serv)
     rdt_sender.rdt_send(SenderProcess.get_outgoing_data())
