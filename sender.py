@@ -1,3 +1,6 @@
+import time
+
+
 class SenderProcess:
     """ Represent the sender process in the application layer  """
 
@@ -98,15 +101,21 @@ class RDTSender:
 
             checksum = RDTSender.get_checksum(data)
             pkt = RDTSender.make_pkt(self.sequence, data, checksum)
-            pkt2 = RDTSender.clone_packet(pkt)
-            print(f'the sender is trying to send: {data}, with checksum: {checksum}')
-            reply = self.net_srv.udt_send(pkt2)
 
-            while RDTSender.is_corrupted(reply) \
-                    or not RDTSender.is_expected_seq(reply, self.sequence):
+            while True:
                 pkt2 = RDTSender.clone_packet(pkt)
-                print(f'the sender is trying to send: {data}, with checksum: {checksum} again!')
+                print(f'Sender Side: the sender is trying to send: {data}, with checksum: {checksum}')
                 reply = self.net_srv.udt_send(pkt2)
+                if reply is None:
+                    time.sleep(1)
+                    print('Sender Side: timeout!!')
+                elif RDTSender.is_corrupted(reply):
+                    print('Sender Side: the reply received is corrupted!')
+                elif not RDTSender.is_expected_seq(reply, self.sequence):
+                    seq_num = reply['ack']
+                    print(f'Sender Side: wrong sequence number expected: {self.sequence} but found: {seq_num}')
+                else:
+                    break
 
             if self.sequence == '0':
                 self.sequence = '1'

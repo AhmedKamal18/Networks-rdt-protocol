@@ -83,15 +83,18 @@ class NetworkLayer:
         # TODO: You may add ONLY print statements to this function for debugging purpose
         self.packet = frame
         s_test = self.__packet_corruption_probability()
-        loss_test = self.__packet_loss_probability()
 
         if s_test and self.pkt_corrupt:
             self.__corrupt_packet()
 
-        if loss_test and self.pkt_loss:
+        #to add packet loss feature
+        #start
+        loss_test = self.__packet_loss_probability()
+        if loss_test and self.pkt_loss and not s_test:
             return None
 
         time.sleep(self.delay)
+        #end
 
         # bridge|connect the RDT sender and receiver
         self.reply = self.recv.rdt_rcv(self.packet)

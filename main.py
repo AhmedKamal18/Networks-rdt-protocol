@@ -12,7 +12,13 @@ if __name__ == '__main__':
     debug = bool(int(args['debug']))
     corrupt_pkt = True
     corrupt_ack = True
-    pkt_loss = True
+
+    #to enable pkt_loss set it to 1
+    try:
+        pkt_loss = bool(int(args['loss']))
+    except KeyError:
+        pkt_loss = False
+
     if debug:
         corrupt_pkt = bool(int(args['pkt']))
         corrupt_ack = bool(int(args['ack']))
