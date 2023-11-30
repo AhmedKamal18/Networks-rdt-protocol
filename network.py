@@ -87,13 +87,13 @@ class NetworkLayer:
         if s_test and self.pkt_corrupt:
             self.__corrupt_packet()
 
+        time.sleep(self.delay)
         #to add packet loss feature
         #start
         loss_test = self.__packet_loss_probability()
         if loss_test and self.pkt_loss and not s_test:
             return None
 
-        time.sleep(self.delay)
         #end
 
         # bridge|connect the RDT sender and receiver
