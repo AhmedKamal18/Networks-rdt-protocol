@@ -17,7 +17,7 @@ if __name__ == '__main__':
     try:
         pkt_loss = bool(int(args['loss']))
     except KeyError:
-        pkt_loss = False
+        pkt_loss = True
 
     if debug:
         corrupt_pkt = bool(int(args['pkt']))

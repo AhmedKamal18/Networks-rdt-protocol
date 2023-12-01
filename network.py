@@ -10,7 +10,7 @@ NOTE: YOU SHOULD NOT MODIFY THIS CLASS
 class NetworkLayer:
     """ The network layer that deliver packets and acknowledgments between sender and receiver """
 
-    def __init__(self, reliability=1.0, delay=1.0, pkt_corrupt=True, ack_corrupt=True, pkt_loss=False):
+    def __init__(self, reliability=1.0, delay=1.0, pkt_corrupt=True, ack_corrupt=True, pkt_loss=True):
         """ initialize the network layer
         :param reliability: the probability that the network layer will deliver the message correctly
         :param delay: the round trip time for sending a packet and receive a reply
